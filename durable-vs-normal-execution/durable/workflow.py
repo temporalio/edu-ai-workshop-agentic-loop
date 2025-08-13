@@ -8,7 +8,6 @@ from temporalio.common import RetryPolicy
 with workflow.unsafe.imports_passed_through():
     from activities import GenerateReportActivities
 
-# Input dataclass for the workflow
 @dataclass
 class GenerateReportInput:
     prompt: str
@@ -20,7 +19,6 @@ class GenerateReportWorkflow:
     async def run(self, input: GenerateReportInput) -> str:
         
         try:
-            # Execute the LLM call as an activity
             research_facts = await workflow.execute_activity(
                 GenerateReportActivities.perform_research,
                 input.prompt,
@@ -48,7 +46,6 @@ class GenerateReportWorkflow:
         await asyncio.sleep(10)
         
         try:
-            # Execute PDF creation as an activity
             pdf_filename = await workflow.execute_activity(
                 GenerateReportActivities.create_pdf_activity,
                 research_facts,

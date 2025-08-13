@@ -31,14 +31,11 @@ class GenerateReportActivities:
     @activity.defn
     async def create_pdf_activity(self, content: str, filename: str = "research_pdf.pdf") -> str:
         attempt = activity.info().attempt
-        
-        # Fail the first 2 attempts to demonstrate retries
         if attempt <= 2:
             raise ApplicationError(f"PDF creation failed - demonstrating Temporal retries!")
         
-        print("Creating PDF document...")
-        
         doc = SimpleDocTemplate(filename, pagesize=letter)
+        
         styles = getSampleStyleSheet()
         title_style = ParagraphStyle(
             'CustomTitle',
@@ -52,9 +49,10 @@ class GenerateReportActivities:
         title = Paragraph("Research Report", title_style)
         story.append(title)
         story.append(Spacer(1, 20))
+        
         paragraphs = content.split('\n\n')
         for para in paragraphs:
-            if para.strip(): 
+            if para.strip():
                 p = Paragraph(para.strip(), styles['Normal'])
                 story.append(p)
                 story.append(Spacer(1, 12))
