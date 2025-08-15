@@ -1,6 +1,8 @@
+## Part 1, does not have students create a JSON format
 import os
 import sys
 import time
+import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
@@ -65,9 +67,19 @@ try:
     response_content = result["choices"][0]["message"]["content"]
     
     print("Research complete!")
-    print("Now demonstrating normal execution fragility:")
-    print("Press Ctrl+C within the next 15 seconds to simulate a process crash.")
-    print("Then restart the script to see how you lose all progress...")
+    
+    # # Output research response in JSON format to console
+    # research_data = {
+    #     "prompt": prompt,
+    #     "research": response_content
+    # }
+    
+    # print("\nResearch JSON Output:")
+    # print(json.dumps(research_data, indent=2, ensure_ascii=False))
+    
+    # print("\nNow demonstrating normal execution fragility:")
+    # print("Press Ctrl+C within the next 15 seconds to simulate a process crash.")
+    # print("Then restart the script to see how you lose all progress...")
     
     # Long pause to allow killing the process
     for i in range(15, 0, -1):
