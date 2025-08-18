@@ -57,7 +57,21 @@ class GenerateReportWorkflow:
                 )
             )
             
-            return f"Successfully created research report PDF: {pdf_filename}"
+            print(f"First PDF created: {pdf_filename}")
+            
+            print("\nStarting PDF creation with image...")
+            pdf_with_image_filename = await workflow.execute_activity(
+                GenerateReportActivities.create_pdf_with_image,
+                args=[input.prompt, research_facts],
+                start_to_close_timeout=timedelta(seconds=60),
+                retry_policy=RetryPolicy(
+                    initial_interval=timedelta(seconds=2),
+                    maximum_attempts=3,
+                    backoff_coefficient=2.0,
+                )
+            )
+            
+            return f"Successfully created both PDFs:\n1. Text-only: {pdf_filename}\n2. With image: {pdf_with_image_filename}"
         
         except Exception as e:
             workflow.logger.error(f"PDF generation failed: {e}")

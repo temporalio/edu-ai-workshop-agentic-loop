@@ -18,7 +18,7 @@ async def main() -> None:
         client,
         task_queue="durable",
         workflows=[GenerateReportWorkflow],
-        activities=[activities.perform_research, activities.create_pdf_activity],
+        activities=[activities.perform_research, activities.create_pdf_activity, activities.create_pdf_with_image],
     )
     logging.info(f"Starting the worker....")
     await worker.run()
