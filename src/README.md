@@ -1,5 +1,31 @@
 ## Demo Draft
 
+### Setup Instructions
+
+Before running the demos, ensure you have the correct Python version and dependencies installed:
+
+#### Install Python 3.13 with uv
+This project requires Python 3.13. If you don't have it installed, use uv to install it:
+
+```bash
+# Install Python 3.13 using uv
+uv python install 3.13
+
+# Verify the version
+uv python list
+```
+
+The project is already configured to use Python 3.13 via the `.python-version` file, so uv will automatically use the correct version when you run commands in this directory.
+
+#### Install Dependencies
+Install the project dependencies using uv:
+
+```bash
+# Install all dependencies (including dev dependencies)
+uv sync
+```
+
+
 ### Instructor Instructions 
 
 ### Normal Execution Demo

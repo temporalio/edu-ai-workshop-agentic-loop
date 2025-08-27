@@ -1,0 +1,103 @@
+[project]
+name = "edu-ai-workshop"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "temporalio",
+    "litellm",
+    "reportlab",
+]
+authors = [{email = "mason.egger@temporal.io"}]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "pytest>=8.4.1",
+    "ruff>=0.12.10",
+    "types-reportlab>=4.4.1.20250822",
+]
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "RUF", # Ruff-specific rules
+    "PIE", # flake8-pie
+    "RET", # flake8-return
+    "PTH", # flake8-use-pathlib
+    "PL",  # pylint
+    "TRY", # tryceratops
+]
+ignore = [
+    "E501",    # line too long (handled by formatter)
+    "PLR2004", # magic values
+    "PLR0913", # too many arguments
+    "TRY003",  # long exception messages
+    "B008",    # function call in default argument
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+known-first-party = ["edu_ai_workshop", "src"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+check_untyped_defs = true
+ignore_missing_imports = false
+follow_imports = "normal"
+follow_imports_for_stubs = true
+namespace_packages = true
+show_error_codes = true
+strict_equality = true
+warn_unreachable = true
+strict_concatenate = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+disallow_any_explicit = true
+disallow_any_decorated = true
+no_implicit_reexport = true
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = [
+    "litellm",
+    "litellm.*",
+    "reportlab",
+    "reportlab.*",
+    "config",
+    "dotenv",
+]
+ignore_missing_imports = true
+
+
