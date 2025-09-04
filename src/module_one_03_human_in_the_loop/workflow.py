@@ -22,7 +22,7 @@ class GenerateReportWorkflow:
             decision=UserDecision.WAIT
         )  # UserDecision Signal starts with WAIT as the default state
         self._research_result: str | None = None
-   
+
     @workflow.signal
     async def user_decision_signal(self, decision_data: UserDecisionSignal) -> None:
         self._user_decision = decision_data

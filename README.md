@@ -47,16 +47,17 @@ uv python install 3.13
 uv python list
 ```
 
-### 2. Install Dependencies
+#### Install Dependencies
 
-```bash
-# Clone the repository
-git clone https://github.com/temporalio/edu-ai-workshop.git
-cd edu-ai-workshop
+1. Create a virtual environment: `python -m venv env`
 
-# Install all dependencies
-uv sync
-```
+2. Activate the environment:
+- Mac: `source env/bin/activate`
+- Windows: `env\Scripts\activate`
+
+3. Install dependencies from `pyproject.toml` directory: `pip install -e ..`
+
+4. Once activated, you should see (env) prepended to your bash prompt
 
 ### 3. Configure API Keys
 
@@ -144,6 +145,7 @@ By completing this workshop, you'll learn:
 
 3. **Human-in-the-Loop Patterns** - Using Temporal Signals to incorporate human decision-making into AI workflows
 
+4. **Agentic Loop** - Creating an Agentic loop to have an AI agent make its own decisions about how to solve problems 
 
 ## Workshop Structure
 
@@ -164,6 +166,12 @@ By completing this workshop, you'll learn:
 - Workflow pause/resume patterns
 - Building approval workflows
 - Production deployment considerations
+
+### Part 4: Agentic Loop
+- Introduction to Agentic loop
+- Introduction to Dynamic Activities
+- Understanding dynamic tools 
+- Determining when the goal is complete
 
 ## Technical Architecture
 
@@ -207,7 +215,3 @@ This workshop is designed for educational purposes. Feel free to:
 - Submit issues for bugs or unclear instructions
 - Propose improvements to the examples
 - Share your own AI agent implementations
-
-## License
-
-[Include appropriate license information]

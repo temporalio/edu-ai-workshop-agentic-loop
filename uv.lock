@@ -159,7 +159,7 @@ wheels = [
 ]
 
 [[package]]
-name = "edu-ai-workshop"
+name = "edu-ai-workshop-agentic-loop"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

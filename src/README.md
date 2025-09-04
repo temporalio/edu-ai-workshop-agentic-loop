@@ -18,20 +18,16 @@ uv python list
 The project is already configured to use Python 3.13 via the `.python-version` file, so uv will automatically use the correct version when you run commands in this directory.
 
 #### Install Dependencies
-Install the project dependencies using uv:
 
-```bash
-# Install all dependencies (including dev dependencies)
-uv sync
-```
+1. Create a virtual environment: `python -m venv env`
 
-#### Setup
+2. Activate the environment:
+- Mac: `source env/bin/activate`
+- Windows: `env\Scripts\activate`
 
-1. Run the following command to create a virtual environment: `python -m venv env`.
-2. Activate the environment using the following command:
-    - Linux/Mac: `source env/bin/activate`
-    - Windows: `env\Scripts\activate`
-Once the environment is active you should see (env) prepended to your bash prompt.
+3. Install dependencies from `pyproject.toml` directory: `pip install -e ..`
+
+4. Once activated, you should see (env) prepended to your bash prompt
 
 ### Instructor Instructions 
 
@@ -74,3 +70,25 @@ Once the environment is active you should see (env) prepended to your bash promp
 8. Demonstrate the modification by typing `edit`.
 9. Enter additional instructions (e.g.: "turn this into a poem") and see the new output in the terminal window by typing `query` again.
 10. Finally, show that you can keep changing the execution path of your Workflow Execution by typing `keep`. Show that the PDF has appeared in your `module_one_03_human_in_the_loop` directory.
+
+### Agentic Loop Demo - Simple AI Booking Agent
+1. We will now showcase how an AI agent can dynamically choose its own tools with Temporal. Route to the `module_one_04_agentic_loop` directory with `cd module_one_04_agentic_loop`.
+2. Open three terminal windows.
+3. In one terminal window, start the Temporal server with `temporal server start-dev --ui-port 8080` (if not already running).
+4. In another terminal window, navigate to the `module_one_04_agentic_loop` directory and run the worker with `python worker.py`.
+5. In the third terminal window, execute your Workflow with `python starter.py`.
+6. Enter a booking goal when prompted (e.g., "Book a flight from RDU to London on November 18").
+7. Watch as the AI agent:
+    - Decides to search for flights first
+    - Extracts the origin, destination, and date from your goal
+    - Executes the search
+    - Decides to check availability
+    - Decides to book the flight
+    - Completes the process
+8. The output shows:
+    - The final result
+    - Steps the AI agent took
+9. In the Web UI, you can see:
+    - Each call to `decide_next_action` where AI chooses a tool
+    - The execution of each tool (search_flights, check_availability, book_flight)
+    - How the context builds up through the process
