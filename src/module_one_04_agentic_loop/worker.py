@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-from activities import agent_activities, dynamic_tool_activity
+from activities import agent_validate_prompt, ai_select_tool_with_params, dynamic_tool_activity
 from temporalio.client import Client
 from temporalio.worker import Worker
 from workflow import AgenticWorkflow
@@ -24,7 +24,8 @@ async def main() -> None:
             task_queue="agentic-queue",
             workflows=[AgenticWorkflow],
             activities=[
-                agent_activities.ai_select_tool_with_params,
+                agent_validate_prompt,
+                ai_select_tool_with_params,
                 dynamic_tool_activity, 
             ],
             activity_executor=executor,

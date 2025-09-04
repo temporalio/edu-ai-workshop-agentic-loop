@@ -1,30 +1,44 @@
 from datetime import timedelta
 
 from temporalio import workflow
-from activities import agent_activities
-from models import BookingRequest, BookingResult  
+from models import BookingResult, AgentGoal
 from tools import AVAILABLE_TOOLS
 
 
 @workflow.defn
 class AgenticWorkflow:
     @workflow.run
-    async def run(self, request: BookingRequest) -> BookingResult:
+    async def run(self, agent_goal: AgentGoal) -> BookingResult:
 
         # Track execution context and steps
         context = ""
         steps_taken: list[str] = []
         max_iterations = 10
 
-        workflow.logger.info(f"Starting agentic loop for goal: {request.goal}")
+        workflow.logger.info(f"Starting agentic loop for goal: {agent_goal.description}")
 
         for iteration in range(max_iterations):
             workflow.logger.info(f"Agentic loop iteration {iteration + 1}")
+            
+            # Validate the current context/prompt aligns with agent capabilities
+            # This is especially useful if the agent gets user input during execution
+            is_valid = await workflow.execute_activity(
+                "agent_validate_prompt",
+                args=[agent_goal, agent_goal.description],
+                start_to_close_timeout=timedelta(seconds=30),
+            )
+            
+            if not is_valid:
+                workflow.logger.warning(f"Validation failed at iteration {iteration + 1}")
+                context += "\n\nValidation failed: Request outside of agent capabilities"
+                steps_taken.append("Validation failed - skipping iteration")
+                continue
 
             # AI decides which tool to use AND extracts parameters
+            # Pass the full AgentGoal for richer context
             decision = await workflow.execute_activity(
-                agent_activities.ai_select_tool_with_params,
-                args=[request.goal, AVAILABLE_TOOLS, context],
+                "ai_select_tool_with_params",
+                args=[agent_goal, AVAILABLE_TOOLS, context],
                 start_to_close_timeout=timedelta(seconds=30),
             )
 
@@ -82,7 +96,7 @@ class AgenticWorkflow:
         # Determine success based on whether booking was completed
         success = any("book_flight" in step and "failed" not in step for step in steps_taken)
 
-        message = f"{'Successfully completed' if success else 'Partially completed'}: {request.goal}"
+        message = f"{'Successfully completed' if success else 'Partially completed'}: {agent_goal.description}"
 
         return BookingResult(
             message=message,
