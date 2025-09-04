@@ -1,4 +1,4 @@
-## Demo for Normal Execution
+## Demo Instructions
 
 ### Setup Instructions
 
