@@ -1,8 +1,6 @@
 import json
-import os
-
 from temporalio import activity
-
+from litellm import completion
 from models import ToolDefinition, AgentGoal
 
 
@@ -17,7 +15,6 @@ async def agent_validate_prompt(
         
         This ensures the request matches what the agent can do with its available tools.
         """
-        from litellm import completion
         
         # Build a description of what the agent can do
         capabilities = f"Agent: {agent_goal.agent_name}\n"
@@ -50,73 +47,30 @@ Respond with only YES or NO."""
 
 @activity.defn
 async def ai_select_tool_with_params(
-    goal: str | AgentGoal,  # Can accept either a string or AgentGoal
+    goal: str,
     available_tools: dict[str, ToolDefinition], 
     context: str,
     llm_model: str,
     llm_api_key: str
 ) -> dict[str, str | dict[str, str | int]]:
-        """AI agent selects tool AND extracts parameters in one call.
-        """
-        from litellm import completion
+    """AI agent selects tool and extracts parameters"""
     
-        if isinstance(goal, AgentGoal):
-            agent_goal = goal
-            goal_text = agent_goal.description
-            # Use the agent's tools if provided, otherwise use passed tools
-            if agent_goal.tools:
-                tools_to_use = {tool.name: tool for tool in agent_goal.tools}
-            else:
-                tools_to_use = available_tools
-        else:
-            agent_goal = None
-            goal_text = goal
-            tools_to_use = available_tools
-        
-        # Build tool descriptions with parameters
-        tools_description = []
-        for name, tool_def in tools_to_use.items():
-            if isinstance(tool_def, ToolDefinition):
-                tool_str = f"Tool: {name}\n"
-                tool_str += f"Description: {tool_def.description}\n"
-                tool_str += "Arguments: " + ", ".join(
-                    [f"{arg.name} ({arg.type}): {arg.description}" for arg in tool_def.arguments]
-                )
-                tools_description.append(tool_str)
-        
-        tools_text = "\n\n".join(tools_description)
-        
-        # Build prompt with optional AgentGoal context
-        if agent_goal:
-            # Use richer context from AgentGoal
-            prompt = f"""{agent_goal.starter_prompt if agent_goal.starter_prompt else ''}
+    # Build tool descriptions
+    tools_text = "\n\n".join([
+        f"Tool: {name}\n"
+        f"Description: {tool.description}\n"
+        f"Arguments: {', '.join(f'{arg.name} ({arg.type}): {arg.description}' for arg in tool.arguments)}"
+        for name, tool in available_tools.items()
+    ])
 
-You are {agent_goal.agent_name if agent_goal.agent_name else 'an AI agent'}.
-Goal: {goal_text}
-
-{f"Example interactions: {agent_goal.example_conversation_history}" if agent_goal.example_conversation_history else ""}
+    # Build prompt
+    prompt = f"""You are a flight-booking AI agent working to achieve this goal: {goal}
 
 Available tools:
 {tools_text}
 
 Current context:
-{context if context else "Just starting - no actions taken yet"}
-
-Based on the goal and context, decide the next action.
-Return a JSON object with:
-- "tool": the tool name to use (or "DONE" if complete)  
-- "parameters": an object with the required parameters
-
-Return ONLY the JSON object."""
-        else:
-            # Simple prompt for string goal
-            prompt = f"""You are an AI agent working to achieve this goal: {goal_text}
-
-Available tools:
-{tools_text}
-
-Current context:
-{context if context else "Just starting - no actions taken yet"}
+{context or "Just starting - no actions taken yet"}
 
 Based on the goal and context, decide the next action.
 Return a JSON object with:
@@ -124,36 +78,27 @@ Return a JSON object with:
 - "parameters": an object with the required parameters
 
 Examples:
-{{"tool": "search_flights", "parameters": {{"origin": "NYC", "destination": "London", "date": "March 15"}}}}
-{{"tool": "book_flight", "parameters": {{"flight_id": "AA123", "seat_class": "economy"}}}}
+{{"tool": "search_flights", "parameters": {{"origin": "NYC", "destination": "London", "date": "tomorrow"}}}}
+{{"tool": "book_flight", "parameters": {{"flight_id": "UA456", "seat_class": "economy"}}}}
 {{"tool": "DONE", "parameters": {{}}}}
 
 Return ONLY the JSON object."""
-        
-        response = completion(
-            model=llm_model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.1,
-            api_key=llm_api_key
-        )
-        
-        decision_text = response.choices[0].message.content.strip()
-        activity.logger.info(f"AI decision: {decision_text}")
-        
-        # Remove markdown code blocks if present
-        if decision_text.startswith("```"):
-            # Remove starting ```json or ```
-            decision_text = decision_text.split("\n", 1)[1] if "\n" in decision_text else decision_text[3:]
-            # Remove ending ```
-            if decision_text.endswith("```"):
-                decision_text = decision_text[:-3].strip()
-        
-        try:
-            return json.loads(decision_text)
-        except json.JSONDecodeError:
-            if "DONE" in decision_text.upper():
-                return {"tool": "DONE", "parameters": {}}
-            return {"tool": decision_text, "parameters": {}}
+
+    response = completion(
+        model=llm_model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.1,
+        api_key=llm_api_key
+    )
+
+    decision_text = response.choices[0].message.content.strip()
+    activity.logger.info(f"AI decision: {decision_text}")
+
+    try:
+        return json.loads(decision_text)
+    except json.JSONDecodeError:
+        activity.logger.warning(f"Failed to parse: {decision_text}")
+        return {"tool": "DONE", "parameters": {}}
 
 # Tool activities - register each tool as a separate activity
 @activity.defn(name="search_flights")

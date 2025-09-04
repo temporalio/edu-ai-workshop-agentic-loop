@@ -12,9 +12,6 @@ class AgenticWorkflow:
         llm_model = agent_goal.llm_model or "openai/gpt-4o-mini"
         llm_api_key = agent_goal.llm_api_key
         
-        if not llm_api_key:
-            raise ValueError("llm_api_key must be provided in AgentGoal")
-
         # Track execution context and steps
         context = ""
         steps_taken: list[str] = []
@@ -25,33 +22,31 @@ class AgenticWorkflow:
         for iteration in range(max_iterations):
             workflow.logger.info(f"Agentic loop iteration {iteration + 1}")
             
-            # Validate the current context/prompt aligns with agent capabilities
-            # This is especially useful if the agent gets user input during execution
-            is_valid = await workflow.execute_activity(
-                "agent_validate_prompt",
-                args=[agent_goal, agent_goal.description, llm_model, llm_api_key],
-                start_to_close_timeout=timedelta(seconds=30),
-            )
-            
-            if not is_valid:
-                workflow.logger.warning(f"Validation failed at iteration {iteration + 1}")
-                context += "\n\nValidation failed: Request outside of agent capabilities"
-                steps_taken.append("Validation failed - skipping iteration")
-                continue
+            # Validate the request aligns with agent capabilities (first iteration only)
+            if iteration == 0:
+                is_valid = await workflow.execute_activity(
+                    "agent_validate_prompt",
+                    args=[agent_goal, agent_goal.description, llm_model, llm_api_key],
+                    start_to_close_timeout=timedelta(seconds=30),
+                )
+                
+                if not is_valid:
+                    workflow.logger.warning("Validation failed - request outside agent capabilities")
+                    return BookingResult(
+                        message="Request outside of agent capabilities",
+                        steps_taken=["Validation failed - request not compatible with agent"]
+                    )
 
-            # AI decides which tool to use AND extracts parameters
-            # Pass the goal description as string for simplicity
+            # AI decides which tool to use and extracts parameters
             decision = await workflow.execute_activity(
                 "ai_select_tool_with_params",
                 args=[agent_goal.description, AVAILABLE_TOOLS, context, llm_model, llm_api_key],
                 start_to_close_timeout=timedelta(seconds=30),
             )
 
-            tool_result = decision.get("tool", "")
-            selected_tool = tool_result if isinstance(tool_result, str) else ""
+            selected_tool = decision.get("tool", "")
+            parameters = decision.get("parameters", {})
             workflow.logger.info(f"AI selected tool: {selected_tool}")
-            param_result = decision.get("parameters", {})
-            parameters = param_result if isinstance(param_result, dict) else {}
 
             if selected_tool.upper() == "DONE":
                 workflow.logger.info("AI determined goal is complete")
@@ -71,26 +66,18 @@ class AgenticWorkflow:
                     start_to_close_timeout=timedelta(seconds=30),
                 )
 
-                context += f"\n\nExecuted: {selected_tool}"
-                if parameters:
-                    params_str = ", ".join([f"{k}={v}" for k, v in parameters.items()])
-                    context += f" with ({params_str})"
-                context += f"\nResult: {result}"
-
-                # Track the step
-                step_desc = f"{selected_tool}"
-                if parameters:
-                    step_desc += f" ({', '.join([f'{k}={v}' for k, v in parameters.items()])})"
-                step_desc += f": {result[:80]}..."
-                steps_taken.append(step_desc)
+                # Update context for AI decision-making
+                context += f"\n\nExecuted: {selected_tool}\nResult: {result}"
+                
+                # Track that we completed this tool
+                steps_taken.append(selected_tool)
 
                 workflow.logger.info(f"Tool result: {result[:200]}...")
 
             except Exception as e:
-                error_msg = f"Error executing {selected_tool}: {e!s}"
-                workflow.logger.error(error_msg)
-                context += f"\n{error_msg}"
-                steps_taken.append(f"{selected_tool} failed: {e!s}")
+                workflow.logger.error(f"Error executing {selected_tool}: {e}")
+                context += f"\nError: {selected_tool} failed - {e}"
+                steps_taken.append(f"{selected_tool} (failed)")
 
         # Prepare final result
         if not steps_taken:

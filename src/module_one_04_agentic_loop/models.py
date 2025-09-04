@@ -37,11 +37,3 @@ class AgentGoal:
     example_conversation_history: Optional[str] = ""
     llm_model: Optional[str] = None
     llm_api_key: Optional[str] = None
-    
-    
-@dataclass
-class AgentDecision:
-    """Represents an agent's decision about which tool to use."""
-    tool: str
-    parameters: dict[str, Union[str, int]]
-    reasoning: Optional[str] = None  # Why the agent chose this tool

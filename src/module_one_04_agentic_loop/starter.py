@@ -41,11 +41,7 @@ async def main() -> None:
     )
 
     result = await handle.result()
-
     print(result.message)
-    print("\nSteps taken by AI agent:")
-    for i, step in enumerate(result.steps_taken, 1):
-        print(f"   {i}. {step}")
 
 if __name__ == "__main__":
     asyncio.run(main())
