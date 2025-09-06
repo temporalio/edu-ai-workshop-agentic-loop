@@ -51,7 +51,7 @@ async def calculate_total_cost(params: Dict[str, Union[str, int]]) -> str:
     return f"""Flight {flight_id} budget check:
 - Total cost for {passengers} passenger(s): ${grand_total}
 - Budget limit: ${budget}
-- Within budget: {'Yes ✓' if is_under_budget else 'No ✗'}
+- Within budget: {'Yes' if is_under_budget else 'No'}
 - {'Amount under budget: $' + str(budget_difference) if is_under_budget else 'Amount over budget: $' + str(abs(budget_difference))}"""
 
 
