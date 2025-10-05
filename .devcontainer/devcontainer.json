@@ -1,0 +1,38 @@
+{
+    "image": "temporalio/gitpod-edu:1.4",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-toolsai.jupyter",
+                "ms-python.python"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "${containerEnv:HOME}/.local/bin/python"
+            }
+        },
+        "codespaces": {
+            "openFiles": [
+                "README.md"
+            ]
+        }
+    },
+    "forwardPorts": [8080, 7233],
+    "portsAttributes": {
+        "8080": {
+            "label": "Temporal UI",
+            "onAutoForward": "openBrowser"
+        },
+        "7233": {
+            "label": "Temporal Server"
+        }
+    },
+    "onCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && . $HOME/.cargo/env && uv sync && uv pip install ipykernel jupyter && uv run python -m ipykernel install --user --name='python3' --display-name='Python 3 (ipykernel)'",
+    "postStartCommand": "nohup temporal server start-dev --ui-port 8080 > /tmp/temporal.log 2>&1 &",
+    "remoteEnv": {
+        "PROMPT_DIRTRIM": "2",
+        "PATH": "${containerEnv:HOME}/.cargo/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}"
+    }
+}
