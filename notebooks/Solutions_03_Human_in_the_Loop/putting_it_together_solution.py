@@ -1,9 +1,6 @@
 # Putting it together, we see we have set the Signal state, created the Signal handler method, 
 # and have logic in the Workflow to how it will react to the Signal. 
-import asyncio
 from datetime import timedelta
-import logging
-
 from temporalio import workflow
 
 @workflow.defn(sandboxed=False)

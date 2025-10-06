@@ -1,4 +1,3 @@
-import asyncio
 from temporalio import workflow
 
 @workflow.defn(sandboxed=False)
