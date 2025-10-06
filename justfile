@@ -27,7 +27,7 @@ format-check:
 
 # Run mypy type checking
 typecheck:
-    cd src/module_one_01_ai_agent && uv run mypy app.py
+    cd src/module_one_01_foundations_ai && uv run mypy app.py
     cd src/module_one_02_adding_durability && uv run mypy --ignore-missing-imports activities.py worker.py workflow.py starter.py models.py
     cd src/module_one_03_human_in_the_loop && uv run mypy --ignore-missing-imports activities.py worker.py workflow.py starter.py
 
@@ -72,7 +72,7 @@ temporal:
 
 # Run the demo for 01-AI-Agent
 demo-1:
-    uv run src/module_one_01_ai_agent/app.py
+    uv run src/module_one_01_foundations_ai/app.py
 
 # Run the demo for 02-Add-Durability
 demo-2:

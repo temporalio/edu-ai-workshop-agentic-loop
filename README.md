@@ -18,9 +18,9 @@ This workshop demonstrates three key concepts:
 ├── notebooks/          # Interactive Jupyter notebooks for the workshop
 ├── exercises/          # Hands-on exercises for the workshop
 │   ├── Practice        # Every chapter will have a Practice dir where students do their work in
-│   ├── Solution        # TEvery chapter will have a Solution dir where students can refer
-├── src/                # Standalone Python implementations
-│   ├── module_one_01_ai_agent/           # Simple chain workflow
+│   ├── Solution        # Every chapter will have a Solution dir where students can refer
+├── src/                # Directory for demos for the instructor
+│   ├── module_one_01_foundations_ai/     # Simple chain workflow
 │   ├── module_one_02_adding_durability/  # Temporal-based durable workflow
 │   └── module_one_03_human_in_the_loop/  # Adding human in the loop into our application
 |   └── module_one_04_agentic_loop/       # Agent that can make its own decisions
@@ -40,7 +40,7 @@ You can run this workshop on Codespaces as an Exercise Environment.
 You can launch an exercise environment for this course using GitHub Codespaces by following [this](codespaces.md) walkthrough.
 
 Before presenting, make sure you have cleared all outputs if you've experiemented with this workshop prior to presenting.
-[Clear all outputs](https://i.postimg.cc/RZvQmxLP/clear-all-outputs.png)
+![Clear all outputs](https://i.postimg.cc/RZvQmxLP/clear-all-outputs.png)
 
 ## Key Learning Outcomes
 
