@@ -35,7 +35,7 @@ class GenerateReportWorkflow:
 
             self._research_result = research_facts["choices"][0]["message"]["content"]
 
-            print(f"Research content: {self._research_result}")
+            workflow.logger.info(f"Research content: {self._research_result}")
 
             # Waiting for Signal with user decision
             await workflow.wait_condition(lambda: self._user_decision.decision != UserDecision.WAIT)

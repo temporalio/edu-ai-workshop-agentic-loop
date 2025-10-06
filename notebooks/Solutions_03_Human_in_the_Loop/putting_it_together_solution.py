@@ -1,17 +1,13 @@
-# Putting it together, we see we have set the Signal state, created the Signal handler method, 
-# and have logic in the Workflow to how it will react to the Signal. 
 from datetime import timedelta
 from temporalio import workflow
 
 @workflow.defn(sandboxed=False)
 class GenerateReportWorkflow:
-
     def __init__(self) -> None:
         self._current_prompt: str = ""
         # Instance variable to store the Signal in
         self._user_decision: UserDecisionSignal = UserDecisionSignal(decision=UserDecision.WAIT)
         self._research_result: str = ""
-
 
     # Method to handle the Signal
     @workflow.signal
@@ -40,23 +36,20 @@ class GenerateReportWorkflow:
 
             self._research_result = research_facts["choices"][0]["message"]["content"]
 
-            print(f"Research content: {self._research_result}")
-
             # Waiting for Signal with user decision
             await workflow.wait_condition(lambda: self._user_decision.decision != UserDecision.WAIT)
 
             if self._user_decision.decision == UserDecision.KEEP:
-                print("User approved the research. Creating PDF...")
+                workflow.logger.info("User approved the research. Creating PDF...")
                 continue_agent_loop = False
             elif self._user_decision.decision == UserDecision.EDIT:
-                print("User requested research modification.")
+                workflow.logger.info("User requested research modification.")
                 if self._user_decision.additional_prompt != "":
                     self._current_prompt = (
                         f"{self._current_prompt}\n\nAdditional instructions: {self._user_decision.additional_prompt}"
                     )
-                    print(f"Regenerating research with updated prompt: {self._current_prompt}")
                 else:
-                    print("No additional instructions provided. Regenerating with original prompt.")
+                    workflow.logger.info("No additional instructions provided. Regenerating with original prompt.")
                 llm_call_input.prompt = self._current_prompt
 
                 # TODO Set the user decision back to WAIT for the next loop
