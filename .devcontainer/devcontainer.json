@@ -1,5 +1,5 @@
 {
-    "image": "temporalio/gitpod-edu:1.4",
+    "image": "mcr.microsoft.com/devcontainers/python:3.13",
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
@@ -29,9 +29,9 @@
             "label": "Temporal Server"
         }
     },
-    "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH=\"$HOME/.local/bin:$PATH\" && uv sync && uv pip install pip ipykernel jupyter && uv run python -m ipykernel install --user --name='python3' --display-name='Python 3 (ipykernel)' && echo 'source ${containerWorkspaceFolder}/.venv/bin/activate' >> ~/.bashrc && temporal server start-dev --ui-port 8080",
+    "postCreateCommand": "curl -sSf https://temporal.download/cli.sh | sh && curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH=\"$HOME/.local/bin:$HOME/.temporalio/bin:$PATH\" && uv sync && uv pip install pip ipykernel jupyter && uv run python -m ipykernel install --user --name='python3' --display-name='Python 3 (ipykernel)' && echo 'source ${containerWorkspaceFolder}/.venv/bin/activate' >> ~/.bashrc && $HOME/.temporalio/bin/temporal server start-dev --ui-port 8080",
     "remoteEnv": {
         "PROMPT_DIRTRIM": "2",
-        "PATH": "${containerEnv:HOME}/.cargo/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}"
+        "PATH": "${containerEnv:HOME}/.temporalio/bin:${containerEnv:HOME}/.cargo/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}"
     }
 }
