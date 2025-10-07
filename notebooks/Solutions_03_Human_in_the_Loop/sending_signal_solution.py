@@ -1,5 +1,5 @@
-# Let's send our Signal from the Client code
 async def send_user_decision_signal(client: Client, workflow_id: str) -> None:
+  loop = asyncio.get_running_loop() # We usually do not need this
   handle = client.get_workflow_handle(workflow_id) # Get a handle on the Workflow Execution we want to send a Signal to.
 
   while True:
@@ -11,7 +11,9 @@ async def send_user_decision_signal(client: Client, workflow_id: str) -> None:
       print("2. Type 'edit' to modify the research")
       print("=" * 80)
 
-      decision = input("Your decision (keep/edit): ").strip().lower()
+      # When running input in async code, run in an executor to not block the event loop
+      decision = await loop.run_in_executor(None, input, "Your decision (keep/edit/query): ")
+      decision = decision.strip().lower()
 
       if decision in {"keep", "1"}:
           signal_data = UserDecisionSignal(decision=UserDecision.KEEP)
@@ -23,7 +25,7 @@ async def send_user_decision_signal(client: Client, workflow_id: str) -> None:
           additional_prompt = additional_prompt_input if additional_prompt_input else ""
 
           signal_data = UserDecisionSignal(decision=UserDecision.EDIT, additional_prompt=additional_prompt)
-          await handle.signal("user_decision_signal", signal_data) # Send our Edit Signal to our Workflow Execution we have a handle on
+          # TODO Send our Signal to our Workflow Execution we have a handle on
           print("Signal sent to regenerate research")
 
       else:
