@@ -1,7 +1,6 @@
 # Adding a Query into our Workflow code
 import asyncio
 from datetime import timedelta
-import logging
 
 from temporalio import workflow
 
