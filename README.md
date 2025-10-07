@@ -16,6 +16,8 @@ This workshop demonstrates three key concepts:
 
 ```
 ├── notebooks/          # Interactive Jupyter notebooks for the workshop
+│   ├── Solution        # Solutions for the code-alongs during the workshop
+│   ├── Content         # Jupyter notebooks to run during workshop
 ├── exercises/          # Hands-on exercises for the workshop
 │   ├── Practice        # Every chapter will have a Practice dir where students do their work in
 │   ├── Solution        # Every chapter will have a Solution dir where students can refer
@@ -51,7 +53,6 @@ By completing this workshop, you'll learn:
 2. **Durability and Fault Tolerance** - How Temporal workflows provide automatic recovery from failures without losing progress
 
 3. **Human-in-the-Loop Patterns** - Using Temporal Signals to incorporate human decision-making into AI workflows
-
 
 ## Workshop Structure
 
