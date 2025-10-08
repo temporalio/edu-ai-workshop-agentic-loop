@@ -10,7 +10,7 @@
                 "ms-python.python"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "${containerEnv:HOME}/.local/bin/python"
+                "python.defaultInterpreterPath": "/workspaces/edu-ai-workshop-agentic-loop/.venv/bin/python"
             }
         },
         "codespaces": {
@@ -30,7 +30,7 @@
         }
     },
     "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && . $HOME/.local/bin/env && uv sync && uv pip install ipykernel jupyter && uv run python -m ipykernel install --user --name=python3 --display-name='Python 3 (ipykernel)'",
-    "postStartCommand": "temporal server start-dev --ui-port 8080",
+    "postStartCommand": "nohup temporal server start-dev --ui-port 8080 > /tmp/temporal.log 2>&1 &",
     "remoteEnv": {
         "PROMPT_DIRTRIM": "2",
         "PATH": "${containerEnv:HOME}/.cargo/bin:${containerEnv:HOME}/.local/bin:${containerEnv:PATH}"
