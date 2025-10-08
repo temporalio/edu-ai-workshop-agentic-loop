@@ -10,7 +10,7 @@ This workshop demonstrates three key concepts:
 1. **Traditional AI Agent** - A simple research agent that calls an LLM and generates a PDF report
 2. **Durable Execution** - The same agent built with Temporal workflows for fault tolerance and automatic retries
 3. **Human-in-the-Loop** - Adding Temporal Signals to enable human decision-making within AI workflows
-4. **Agentic Loop** - An introduction into the Agentic Loop
+4. **AI Agents** - An introduction into the Agentic Loop
 
 ## Repository Structure
 
@@ -72,7 +72,7 @@ By completing this workshop, you'll learn:
 - Workflow pause/resume patterns
 - Sending Queries to your Workflows
 
-### Part 4: Agentic Loop
+### Part 4: AI Agents
 - Introduction to Agentic loop
 - Determining when the goal is complete
 
