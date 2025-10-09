@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import uuid
 
 from temporalio.client import Client
 from temporalio.contrib.pydantic import pydantic_data_converter
@@ -16,7 +17,7 @@ async def main():
     result = await client.execute_workflow(
         ToolCallingWorkflow.run,
         query,
-        id="my-workflow-id",
+        id=f"weather-alert-agent-{uuid.uuid4()}",
         task_queue="tool-calling-python-task-queue",
     )
     print(f"Result: {result}")
