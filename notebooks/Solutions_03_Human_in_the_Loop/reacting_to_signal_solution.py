@@ -1,8 +1,8 @@
+from datetime import timedelta
 from temporalio import workflow
 
 @workflow.defn(sandboxed=False)
 class GenerateReportWorkflow:
-
     def __init__(self) -> None:
         self._current_prompt: str = ""
         # Instance variable to store the Signal in
@@ -33,8 +33,6 @@ class GenerateReportWorkflow:
                 start_to_close_timeout=timedelta(seconds=30),
             )
 
-            self._research_result = research_facts["choices"][0]["message"]["content"]
-
             # Waiting for Signal with user decision
             await workflow.wait_condition(lambda: self._user_decision.decision != UserDecision.WAIT)
 
@@ -47,12 +45,10 @@ class GenerateReportWorkflow:
                     self._current_prompt = (
                         f"{self._current_prompt}\n\nAdditional instructions: {self._user_decision.additional_prompt}"
                     )
-                    workflow.logger.info(f"Regenerating research with updated prompt: {self._current_prompt}")
                 else:
                     workflow.logger.info("No additional instructions provided. Regenerating with original prompt.")
                 llm_call_input.prompt = self._current_prompt
 
-                # Set the decision back to WAIT for the next loop
                 self._user_decision = UserDecisionSignal(decision=UserDecision.WAIT)
 
         pdf_generation_input = PDFGenerationInput(content=research_facts["choices"][0]["message"]["content"])

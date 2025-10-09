@@ -1,18 +1,15 @@
+# Set the instance variable of the user decision to default to WAIT
+# Run this code block to load it into the program
+from datetime import timedelta
 from temporalio import workflow
 
+# sandboxed=False is a Notebook only requirement. You normally don't do this
 @workflow.defn(sandboxed=False)
 class GenerateReportWorkflow:
-
     def __init__(self) -> None:
         self._current_prompt: str = ""
-        # Instance variable to store the Signal in
-        self._user_decision: UserDecisionSignal = UserDecisionSignal(decision=UserDecision.WAIT)
-
-    # Method to handle the Signal
-    @workflow.signal
-    async def user_decision_signal(self, decision_data: UserDecisionSignal) -> None:
-        # Update the instance variable with the received Signal data
-        self._user_decision = decision_data
+        # Instance variable to store Signal data
+        self._user_decision: UserDecisionSignal = UserDecisionSignal(decision=UserDecision.WAIT) # TODO Set the default state of the user decision to be WAIT
 
     @workflow.run
     async def run(self, input: GenerateReportInput) -> GenerateReportOutput:
@@ -24,8 +21,10 @@ class GenerateReportWorkflow:
             llm_model=input.llm_research_model,
         )
 
+        # Continue looping until the user approves the research
         continue_agent_loop = True
 
+        # Execute the LLM call to generate research based on the current prompt
         while continue_agent_loop:
             research_facts = await workflow.execute_activity(
                 llm_call,
@@ -33,27 +32,22 @@ class GenerateReportWorkflow:
                 start_to_close_timeout=timedelta(seconds=30),
             )
 
-            self._research_result = research_facts["choices"][0]["message"]["content"]
-
-            # Waiting for Signal with user decision
-            await workflow.wait_condition(lambda: self._user_decision.decision != UserDecision.WAIT)
-
+            # User approved the research - exit the loop and proceed to PDF generation
             if self._user_decision.decision == UserDecision.KEEP:
                 workflow.logger.info("User approved the research. Creating PDF...")
                 continue_agent_loop = False
+            # User wants to edit the research - update the prompt and loop again
             elif self._user_decision.decision == UserDecision.EDIT:
                 workflow.logger.info("User requested research modification.")
                 if self._user_decision.additional_prompt != "":
+                    # Append the user's additional instructions to the existing prompt
                     self._current_prompt = (
                         f"{self._current_prompt}\n\nAdditional instructions: {self._user_decision.additional_prompt}"
                     )
-                    workflow.logger.info(f"Regenerating research with updated prompt: {self._current_prompt}")
                 else:
                     workflow.logger.info("No additional instructions provided. Regenerating with original prompt.")
+                # Update the Activity input with the modified prompt for the next iteration
                 llm_call_input.prompt = self._current_prompt
-
-                # Set the decision back to WAIT for the next loop
-                self._user_decision = UserDecisionSignal(decision=UserDecision.WAIT)
 
         pdf_generation_input = PDFGenerationInput(content=research_facts["choices"][0]["message"]["content"])
 
