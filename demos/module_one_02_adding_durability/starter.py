@@ -25,7 +25,7 @@ async def main() -> None:
     research_input = GenerateReportInput(prompt=prompt, llm_api_key=LLM_API_KEY)
 
     handle = await client.start_workflow(
-        GenerateReportWorkflow.run,
+        GenerateReportWorkflow,
         research_input,
         id="generate-research-report-workflow",
         task_queue="durable",

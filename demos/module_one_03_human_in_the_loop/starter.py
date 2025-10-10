@@ -24,7 +24,7 @@ async def main() -> None:
         print(f"No prompt entered. Using default: {prompt}")
 
     handle = await client.start_workflow(
-        GenerateReportWorkflow.run,
+        GenerateReportWorkflow,
         GenerateReportInput(prompt=prompt, llm_api_key=LLM_API_KEY),
         id="generate-research-report-workflow",
         task_queue="durable",
