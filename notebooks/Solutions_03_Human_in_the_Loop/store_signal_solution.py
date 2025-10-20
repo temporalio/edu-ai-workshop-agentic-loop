@@ -15,5 +15,4 @@ class GenerateReportWorkflow:
       self._current_prompt = input.prompt
 
       llm_call_input = LLMCallInput(prompt=self._current_prompt)
-
       # rest of code
