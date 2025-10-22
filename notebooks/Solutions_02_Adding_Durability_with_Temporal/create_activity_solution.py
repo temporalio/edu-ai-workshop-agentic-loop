@@ -1,8 +1,17 @@
 from temporalio import activity
+from litellm import completion, ModelResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import inch
+
+@activity.defn
+def llm_call(input: LLMCallInput) -> ModelResponse:
+    response = completion(
+      model=LLM_MODEL,
+      api_key=LLM_API_KEY,
+      messages=[{ "content": input.prompt,"role": "user"}]
+    )
+    return response
 
 @activity.defn
 def create_pdf_activity(input: PDFGenerationInput) -> str:

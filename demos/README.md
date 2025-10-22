@@ -19,13 +19,22 @@ The project is already configured to use Python 3.13 via the `.python-version` f
 
 #### Setup
 
-1. Install dependencies from `pyproject.toml` directory: `uv sync`
+1. Set up your `.env` file. At the root of the `demos` directory, create a `.env` file.
 
-2. From the same directory, activate your virtual environment:
+2. Add the following to your `.env` file:
+
+```
+LLM_API_KEY=YOUR_API_KEY
+LLM_MODEL=openai/gpt-4o
+```
+
+3. Install dependencies from `pyproject.toml` directory: `uv sync`
+
+4. From the same directory, activate your virtual environment:
 - Mac: `source .venv/bin/activate`
 - Windows: `.venv\Scripts\activate`
 
-3. Once activated, you should see (edu-ai-workshop) prepended to your bash prompt
+5. Once activated, you should see (edu-ai-workshop) prepended to your bash prompt
 
 ### Instructor Instructions 
 
