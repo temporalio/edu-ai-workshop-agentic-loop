@@ -1,6 +1,6 @@
-# Foundations of Durable AI with Temporal
+# [Self-Serve Version] Foundations of Durable AI with Temporal
 
-This repository contains a hands-on workshop demonstrating how to build AI agents with Temporal Workflows. 
+This repository contains the self-serve version of this workshop, demonstrating how to build AI agents with Temporal Workflows. 
 The workshop teaches the progression from simple AI agents to production-ready, durable systems that handle failures gracefully and support human-in-the-loop interactions.
 
 ## Workshop Overview
