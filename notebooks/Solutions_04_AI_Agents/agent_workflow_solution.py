@@ -36,9 +36,8 @@ class AgentWorkflow:
                                     "output": result})
 
             else:
-                print(f"No tools needed, responding with a message: {result.output_text}")
+                print(f"No tools chosen, responding with a message: {result.output_text}")
                 return result.output_text
-
 
     async def _handle_function_call(self, item, result, input_list):
         # serialize the LLM output - the decision the LLM made to call a tool
@@ -56,5 +55,4 @@ class AgentWorkflow:
         )
 
         print(f"Made a tool call to {item.name}")
-
         return result

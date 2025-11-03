@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class GetWeatherAlertsRequest(BaseModel):
     state: str = Field(description="Two-letter US state code (e.g. CA, NY)")
