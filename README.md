@@ -31,7 +31,7 @@ This workshop demonstrates three key concepts:
 │   ├── Practice        # Every chapter will have a Practice dir where students do their work in
 │   ├── Solution        # Every chapter will have a Solution dir where students can refer
 ├── demos/              # Directory for demos for the instructor
-│   ├── module_one_01_foundations_ai/     # Simple chain workflow
+│   ├── module_one_01_foundations_ai/     # Simple fixed flow
 │   ├── module_one_02_adding_durability/  # Temporal-based durable workflow
 │   └── module_one_03_human_in_the_loop/  # Adding human in the loop into our application
 |   └── module_one_04_agentic_loop/       # Agent that can make its own decisions
@@ -64,7 +64,7 @@ By completing this workshop, you'll learn:
 
 ## Workshop Structure
 
-### Part 1: Building Your First AI Chain Workflow
+### Part 1: Building Your First AI Fixed Flow
 - Creating basic LLM interactions
 - Calling Actions from your LLM interactions
 - Identifying distributed systems challenges
