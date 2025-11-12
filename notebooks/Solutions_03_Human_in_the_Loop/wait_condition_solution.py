@@ -1,4 +1,5 @@
 from temporalio import workflow
+from datetime import timedelta
 
 @workflow.defn(sandboxed=False)
 class GenerateReportWorkflow:

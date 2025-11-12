@@ -1,5 +1,5 @@
 async def send_user_decision_signal(client: Client, workflow_id: str) -> None:
-  loop = asyncio.get_running_loop() # We usually do not need this
+  loop = asyncio.get_running_loop() # For Jupyter notebooks. We usually do not need this
   handle = client.get_workflow_handle(workflow_id) # Get a handle on the Workflow Execution we want to send a Signal to.
 
   while True:
