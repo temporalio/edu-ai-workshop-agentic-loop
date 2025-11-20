@@ -6,7 +6,11 @@ To launch the codespace, click on the green "Code" drop-down menu in the top-rig
 
 ![1 — Launch Codespace](https://i.postimg.cc/3NqstKLQ/1-launch-codespace.png)
 
-This will open a new tab containing a familiar VSCode-style interface. It may take up to a minute for the tab to populate, during which time "Opening Remote…" will be displayed in the bottom left corner.
+**Note**: If you are unable to create a Codespace, make sure that you go through the SSO process with Temporalio. To do so, click the Settings tab on the repo which will take you through an authentication process to sign in.
+
+![Unable to Access Codespace](https://i.postimg.cc/6pKFNKht/authenticate-sso.png)
+
+Once you open Codespace, this will open a new tab containing a familiar VSCode-style interface. It may take up to a minute for the tab to populate, during which time "Opening Remote…" will be displayed in the bottom left corner.
 
 ![2 — Loading Codespace](https://i.postimg.cc/qvyPGH2V/2-loading-codespace.png)
 

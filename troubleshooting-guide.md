@@ -60,3 +60,13 @@ Create a `.env` file at the root of your directory (if running notebooks for stu
 LLM_API_KEY = YOUR_API_KEY
 LLM_MODEL = "openai/gpt-4o"
 ```
+
+### 5. Rate Limitting Issues
+
+If you are getting an error about your API key rate limiting, add around $5 to your OpenAI account. To do so, go on the [billing page](https://platform.openai.com/settings/organization/billing/overview) and then add more credits.
+
+### 6. Unable to Access Codespace
+
+If you are unable to create a Codespace, make sure that you go through the SSO process with Temporalio. To do so, click the Settings tab on the repo which will take you through an authentication process to sign in.
+
+![Unable to Access Codespace](https://i.postimg.cc/6pKFNKht/authenticate-sso.png)
